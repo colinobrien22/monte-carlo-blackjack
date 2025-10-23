@@ -1,3 +1,5 @@
+[![CI](https://github.com/colinobrien22/monte-carlo-blackjack/actions/workflows/ci.yml/badge.svg)](https://github.com/colinobrien22/monte-carlo-blackjack/actions/workflows/ci.yml)
+
 # monte-carlo-blackjack
 Reinforcement learning project using Monte Carlo control to learn optimal Blackjack strategy.
 
