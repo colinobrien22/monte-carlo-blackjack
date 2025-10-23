@@ -100,3 +100,31 @@ Default paths:
 Q-table file: q_table.pkl at the project root (or ./results/q_table.pkl).
 
 Figures/metrics: ./results/ (create this folder if it doesn’t exist).
+
+## 📈 Results
+
+
+
+- **Learning improves:** MC win-rate rose from ~`X%` to `Y%` after `N` episodes.
+- **Head-to-head (100k hands):**
+
+| Policy | Win % | Push % | Loss % | Notes |
+|--------|-------:|--------:|--------:|-------|
+| MC     |   Y    |   P     |   L     | ε-greedy, first/every-visit |
+| Basic  |   B    |  PB     |  LB     | rules-matched |
+| Random |   R    |  PR     |  LR     | baseline |
+
+### 📈 Learning Curve
+
+![Learning Curve](results/figures/learning_curve.png)
+
+### ♠️ Policy Heatmaps
+
+**With Usable Ace:**
+![Policy (Usable Ace)](results/figures/policy_heatmap_usable_ace.png)
+
+**Without Usable Ace:**
+![Policy (No Ace)](results/figures/policy_heatmap_no_ace.png)
+
+*(Placeholder images will be replaced automatically after first training run — saved to `/results/figures/`.)*
+
