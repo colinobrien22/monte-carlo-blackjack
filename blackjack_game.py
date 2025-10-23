@@ -10,6 +10,8 @@ Original file is located at
 import random
 import pickle
 import os
+import numpy as np
+import matplotlib.pyplot as plt
 
 # -----------------------
 # Card + Hand Helpers
@@ -271,13 +273,14 @@ def play_greedy_hand(Q, shoe, hit_on_soft_17=True, count_blackjack=True):
 # -----------------------
 # Wrappers
 # -----------------------
-def run_training(num_episodes=100_000, cut_card=52, eval_every=5000, eval_hands=2000):
+def run_training(num_episodes=100_000, cut_card=52, eval_every=10000, eval_hands=5000):
     Q, N = {}, {}
     epsilon_start, epsilon_min, decay_rate = 0.2, 0.01, 0.99995
     epsilon = epsilon_start
     shoe = create_shoe()
 
-    ev_log =[]
+    episodes_logged = []
+    win_rates = []
 
     for i in range(1, num_episodes + 1):
         if len(shoe) < cut_card:
@@ -288,19 +291,28 @@ def run_training(num_episodes=100_000, cut_card=52, eval_every=5000, eval_hands=
 
         epsilon = max(epsilon_min, epsilon * decay_rate)
 
+        # periodic checkpoint + optional monitor
         if i % 10000 == 0:
             sample_state = (11, 10, False)
             print(f"Episode {i}, epsilon={epsilon:.4f}, Q[{sample_state}]={Q.get(sample_state, [0.0,0.0])}")
             save_Q(Q, path="q_table.pkl")
-    save_Q(Q, "q_table.pkl")
-    return Q
-  # Optional mini eval logging
-  #      if i % eval_every == 0:
-  #       ev = quick_evaluate_greedy(Q, hands=eval_hands, cut_card=cut_card)
-  #      ev_log.append((i, ev))
-  #        print(f"[eval] after {i} episodes: EV/hand ≈ {ev:.4f}")
 
-  #     return Q, ev_log
+        # log a quick win-rate for the learning curve
+        if i % eval_every == 0:
+            wr = evaluate_win_rate(Q, hands=eval_hands, cut_card=cut_card)
+            episodes_logged.append(i)
+            win_rates.append(wr)
+            print(f"[monitor] after {i} episodes: win-rate ≈ {wr:.3f}")
+
+    # final save
+    save_Q(Q, "q_table.pkl")
+
+    # save visuals
+    save_learning_curve(episodes_logged, win_rates)
+    save_policy_heatmaps(Q)
+
+    return Q
+
 
 def run_evaluation(Q, num_hands=100_000, cut_card=52, hit_on_soft_17=True, count_blackjack=True):
     shoe = create_shoe()
@@ -411,6 +423,79 @@ def print_policy(Q):
             row.append(f"{action_to_char(a):>2}")
         print(" ".join(row))
 
+def evaluate_win_rate(Q, hands=5000, cut_card=52, hit_on_soft_17=True, count_blackjack=True):
+     # Quick win-rate (fraction of wins) for the current greedy policy.
+    shoe = create_shoe()
+    wins = 0
+    for _ in range(hands):
+        if len(shoe) < cut_card:
+            shoe[:] = create_shoe()
+        r = play_greedy_hand(Q, shoe, hit_on_soft_17=hit_on_soft_17, count_blackjack=count_blackjack)
+        if r > 0:
+            wins += 1
+    return wins / hands
+
+def compute_policy_arrays(Q):
+    # Build policy tables for heatmaps (0=Hit, 1=Stand).
+    dealer_vals = list(range(2, 12))         # 2..11 (11=A)
+    hard_totals = list(range(5, 21))         # 5..20
+    soft_totals = list(range(13, 21))        # 13..20 (A2..A9)
+
+    hard = np.zeros((len(hard_totals), len(dealer_vals)), dtype=int)
+    soft = np.zeros((len(soft_totals), len(dealer_vals)), dtype=int)
+
+    for i, total in enumerate(hard_totals):
+        for j, dv in enumerate(dealer_vals):
+            hard[i, j] = greedy_action(Q, (total, dv, False))
+
+    for i, total in enumerate(soft_totals):
+        for j, dv in enumerate(dealer_vals):
+            soft[i, j] = greedy_action(Q, (total, dv, True))
+
+    return (hard_totals, dealer_vals, hard), (soft_totals, dealer_vals, soft)
+
+def plot_policy_heatmap(table, totals, dealer_vals, title, outfile):
+    os.makedirs("results/figures", exist_ok=True)
+    plt.figure()
+    plt.imshow(table, origin="lower", aspect="auto")
+    plt.xticks(range(len(dealer_vals)), [dealer_label(v) for v in dealer_vals])
+    plt.yticks(range(len(totals)), totals)
+    plt.colorbar(label="Action (0=Hit, 1=Stand)")
+    plt.xlabel("Dealer Upcard")
+    plt.ylabel("Player Total")
+    plt.title(title)
+    plt.savefig(outfile, bbox_inches="tight")
+    plt.close()
+
+def save_policy_heatmaps(Q):
+    # Compute & save both policy heatmaps to results/figures.
+    (hard_totals, dealer_vals, hard), (soft_totals, dealer_vals2, soft) = compute_policy_arrays(Q)
+    plot_policy_heatmap(
+        hard, hard_totals, dealer_vals,
+        "Policy Heatmap (No Usable Ace)",
+        "results/figures/policy_heatmap_no_ace.png"
+    )
+    plot_policy_heatmap(
+        soft, soft_totals, dealer_vals2,
+        "Policy Heatmap (Usable Ace)",
+        "results/figures/policy_heatmap_usable_ace.png"
+    )
+
+def save_learning_curve(episodes, win_rates):
+    # Save learning curve to results/figures/learning_curve.png.
+    if not episodes or not win_rates:
+        return
+    os.makedirs("results/figures", exist_ok=True)
+    plt.figure()
+    plt.plot(episodes, win_rates, label="Win Rate")
+    plt.xlabel("Episodes")
+    plt.ylabel("Win Rate")
+    plt.title("Monte Carlo Control Learning Curve")
+    plt.legend()
+    plt.savefig("results/figures/learning_curve.png", bbox_inches="tight")
+    plt.close()
+
+
 def main_menu():
     print("\n=== Blackjack RL Menu ===")
     print("1) Play interactively")
@@ -453,6 +538,7 @@ if __name__ == "__main__":
             Q = load_Q("q_table.pkl")
             if Q:
                 print_policy(Q)
+                save_policy_heatmaps(Q)
             else:
                 print("No saved Q found. Choose 2) Train first.")
 
