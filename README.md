@@ -95,7 +95,6 @@ policy_heatmap_no_ace.png
 
 Runs training → saves q_table.pkl → immediately evaluates on a fixed eval set.
 
-Great for quick experiments you can screenshot for the README / LinkedIn.
 
 Default paths:
 
