@@ -307,10 +307,10 @@ Sample performance over 100,000 evaluation hands:
 
 | Metric          | Value         |
 | --------------- | ------------- |
-| **Win Rate**    | 43.4%         |
-| **Push Rate**   | 8.7%          |
-| **Loss Rate**   | 47.9%         |
-| **EV per Hand** | -0.0031 units |
+| **Win Rate**    | 41.4%         |
+| **Push Rate**   | 8.0%          |
+| **Loss Rate**   | 50.3%         |
+| **EV per Hand** | -0.0431 units |
 
 These results closely match known Blackjack Basic Strategy performance.
 
