@@ -199,7 +199,7 @@ While there is not a separate menu number for "Bankroll Simulator," the **evalua
 * Wins add +1 unit (or +1.5 units for Blackjack).
 * Losses subtract 1 unit.
 * Pushes leave the bankroll unchanged.
-* Over many hands (e.g., 100,000), the program reports:
+* Over many hands (100,000), the program reports:
 
   * Total net units won/lost
   * EV per hand (average profit/loss per unit bet)
