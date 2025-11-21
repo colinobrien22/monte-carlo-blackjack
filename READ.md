@@ -135,7 +135,7 @@ results/figures/
 ```
 monte-carlo-blackjack/
 │
-├── monte_carlo_blackjack.py    # Full RL engine + gameplay + menu
+├── blackjack_game.py           # Full RL engine + gameplay + menu
 ├── q_table.pkl                 # Saved Q-values (after training)
 ├── results/
 │   └── figures/                # Heatmaps + learning curve
@@ -152,7 +152,7 @@ monte-carlo-blackjack/
 Launch the CLI menu:
 
 ```
-python3 monte_carlo_blackjack.py
+python3 blackjack_game.py
 ```
 
 You will see:
