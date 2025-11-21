@@ -152,7 +152,7 @@ monte-carlo-blackjack/
 Launch the CLI menu:
 
 ```
-python monte_carlo_blackjack.py
+python3 monte_carlo_blackjack.py
 ```
 
 You will see:
