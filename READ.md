@@ -271,6 +271,33 @@ This makes the project much more applicable to real casino analytics and risk mo
 
 ---
 
+## 📈 Results
+
+
+
+- **Learning improves:** MC win-rate rose from ~`X%` to `Y%` after `N` episodes.
+- **Head-to-head (100k hands):**
+
+| Policy | Win % | Push % | Loss % | Notes |
+|--------|-------:|--------:|--------:|-------|
+| MC     |   Y    |   P     |   L     | ε-greedy, first/every-visit |
+| Basic  |   B    |  PB     |  LB     | rules-matched |
+| Random |   R    |  PR     |  LR     | baseline |
+
+### 📈 Learning Curve
+
+![Learning Curve](results/figures/learning_curve.png)
+
+### ♠️ Policy Heatmaps
+
+**With Usable Ace:**
+![Policy (Usable Ace)](results/figures/policy_heatmap_usable_ace.png)
+
+**Without Usable Ace:**
+![Policy (No Ace)](results/figures/policy_heatmap_no_ace.png)
+
+---
+
 ## 🔮 Future Enhancements
 
 * Add splitting logic
