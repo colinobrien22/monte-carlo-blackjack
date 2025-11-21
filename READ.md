@@ -143,11 +143,18 @@ monte-carlo-blackjack/
 │       ├── policy_heatmap_usable_ace.png
 │       └── learning_curve.png
 └── README.md                   # Project documentation
+├── requirements.txt        
 ```
 
 ---
 
 ## ▶️ Running the Program
+
+Install requirements.txt
+
+```
+pip install -r requirements.txt
+```
 
 Launch the CLI menu:
 
