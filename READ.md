@@ -191,7 +191,7 @@ Prints the strategy grid and generates heatmaps.
 
 One command to train and compute evaluation metrics.
 
-### **6) Bankroll-Style Simulation via the CLI
+### 6) Bankroll-Style Simulation via the CLI
 
 While there is not a separate menu number for "Bankroll Simulator," the **evaluation flow (options 3 and 5)** already behaves like a bankroll simulation:
 
@@ -296,6 +296,17 @@ This makes the project much more applicable to real casino analytics and risk mo
 **Without Usable Ace:**
 ![Policy (No Ace)](results/figures/policy_heatmap_no_ace.png)
 
+Sample performance over 100,000 evaluation hands:
+
+| Metric          | Value         |
+| --------------- | ------------- |
+| **Win Rate**    | 43.4%         |
+| **Push Rate**   | 8.7%          |
+| **Loss Rate**   | 47.9%         |
+| **EV per Hand** | -0.0031 units |
+
+These results closely match known Blackjack Basic Strategy performance.
+
 ---
 
 ## 🔮 Future Enhancements
@@ -343,21 +354,6 @@ Where:
 ### Expected Value per Hand
 
 EV/hand = total_units_won / hands_played
-
----
-
-## 📊 Example Results
-
-Sample performance over 100,000 evaluation hands:
-
-| Metric          | Value         |
-| --------------- | ------------- |
-| **Win Rate**    | 43.4%         |
-| **Push Rate**   | 8.7%          |
-| **Loss Rate**   | 47.9%         |
-| **EV per Hand** | -0.0031 units |
-
-These results closely match known Blackjack Basic Strategy performance.
 
 ---
 
